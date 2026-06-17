@@ -3,8 +3,14 @@ description: Detects the technology stack used by the repository
 
 outputs:
   stack:
-    description: The detected technology stack (e.g., java-maven, node)
+    description: The detected technology stack (e.g., java, node)
     value: ${{ steps.detect.outputs.stack }}
+  stack_version:
+    description: The version of the detected technology stack
+    value: ${{ steps.detect.outputs.stack_version }}
+  package_manager:
+    description: The detected package manager (e.g., maven, npm)
+    value: ${{ steps.detect.outputs.package_manager }}
 
 runs:
   using: composite

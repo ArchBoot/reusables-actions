@@ -9,7 +9,7 @@ The action analyzes the repository root and determines the stack based on the fo
 | File              | Detected Stack |
 |-------------------|----------------|
 | pom.xml           | java-maven     |
-| package.json      | node           |
+| package.json      | node-npm       |
 | none of the above | none           |
 
 ## Example Usage
@@ -20,34 +20,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Detect stack
         id: detect
         uses: Archbot/reusables-actions/.github/actions/detect-stack@main
 
       - name: Print result
-        run: echo "Detected stack: ${{ steps.detect.outputs.stack }}"
+        run: echo "Detected stack: ${{ steps.detect.outputs.stack }}, with version: ${{ steps.detect.outputs.stack_version }}"
 ```
 
 ## Outputs
 
-| Output | Description                |
-|--------|----------------------------|
-| stack  | Detected technology stack. |
+| Output        | Description                |
+|---------------|----------------------------|
+| stack         | Detected technology stack. |
+| stack-version | Detected version stack.    |
 
 ### Possible Values
 
-| Value      | Description                 |
-|------------|-----------------------------|
-| java-maven | Maven-based Java project    |
-| node       | Node.js project             |
-| none       | No supported stack detected |
+| Value - `stack` | Description                 |
+|-----------------|-----------------------------|
+| java-maven      | Maven-based Java project    |
+| node-npm        | Node.js project             |
+| none            | No supported stack detected |
 
 ## Example Output
 
 ```text
-Detected stack: java-maven
+Detected stack: java-maven, with version 21
 ```
 
 ## Requirements
