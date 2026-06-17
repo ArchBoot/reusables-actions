@@ -3,7 +3,7 @@ description: Detects the technology stack used by the repository
 
 outputs:
   stack:
-    description: The detected technology stack (e.g., java, node)
+    description: The detected technology stack (e.g., java-maven, node-npm)
     value: ${{ steps.detect.outputs.stack }}
   stack_version:
     description: The version of the detected technology stack
