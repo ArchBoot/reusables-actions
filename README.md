@@ -1,4 +1,4 @@
-# reusables-actions
+# Reusables Actions
 Repository that will contain reusable GitHub Actions
 
 ## Available actions
@@ -7,4 +7,5 @@ Repository that will contain reusable GitHub Actions
 |-------------------|-----------------------------------------------------|--------------------------------------------------------------|
 | detect-stack      | Detects the technology stack used by the repository | [Documentation](.github/actions/detect-stack/README.md)      |
 | setup-environment | Setup environment to used by the repository         | [Documentation](.github/actions/setup-environment/README.md) |
+| get-version       | Get version from project used by the repository     | [Documentation](.github/actions/get-version/README.md)       |
 
