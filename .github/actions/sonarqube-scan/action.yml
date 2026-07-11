@@ -1,0 +1,47 @@
+name: SonarQube Scan
+description: Scan code with SonarQube
+inputs:
+  stack:
+    description: The technology stack to scan (e.g., java-maven, node-npm)
+    required: true
+  sonar_host_url:
+    description: The URL of the SonarQube server
+    required: true
+  sonar_token:
+    description: The authentication token for the SonarQube server
+    required: true
+  project_key:
+    description: The key of the project to scan
+    required: true
+  project_name:
+    description: The name of the project to scan
+    required: true
+  branch_name:
+    description: The name of the branch to scan
+    required: false
+    default: ${{ github.ref_name }}
+  sources:
+    description: The source directories to scan (comma-separated)
+    required: false
+    default: 'src'
+  coverage-report-path:
+    description: The path to the coverage report file
+    required: false
+    # Default path for lcov coverage report node projects. Adjust as needed for your project structure.
+    default: 'coverage/lcov.info'
+
+runs:
+  using: composite
+  steps:
+    - name: Run SonarQube Scan
+      shell: bash
+      run: ${{ github.action_path }}/scripts/sonar-scan.sh
+      env:
+        STACK: ${{ inputs.stack }}
+        SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
+        SONAR_TOKEN: ${{ inputs.sonar_token }}
+        PROJECT_KEY: ${{ inputs.project_key }}
+        PROJECT_NAME: ${{ inputs.project_name }}
+        BRANCH_NAME: ${{ inputs.branch_name }}
+        SOURCES: ${{ inputs.sources }}
+        COVERAGE_REPORT_PATH: ${{ inputs.coverage-report-path }}
