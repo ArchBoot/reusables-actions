@@ -16,3 +16,4 @@ Repository that will contain reusable GitHub Actions
 | test                 | Test the project using the detected stack                          | [Documentation](.github/actions/test/README.md)                 |
 | create-branch        | Creates a new branch in the repository                             | [Documentation](.github/actions/create-branch/README.md)        |
 | create-git-tag       | Creates a new git tag in the repository                            | [Documentation](.github/actions/create-git-tag/README.md)       |
+| setup-git            | Setup git configuration for the repository                         | [Documentation](.github/actions/setup-git/README.md)            |
