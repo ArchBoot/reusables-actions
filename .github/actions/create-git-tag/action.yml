@@ -1,0 +1,21 @@
+name: Create Git Tag
+description: Creates and pushes a Git tag to origin
+
+inputs:
+  tag:
+    description: Tag name to create (e.g. v0.1.0)
+    required: true
+  message:
+    description: Annotated tag message. If empty, a lightweight tag is created.
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create and push tag
+      shell: bash
+      run: ${{ github.action_path }}/scripts/create-tag.sh
+      env:
+        TAG: ${{ inputs.tag }}
+        MESSAGE: ${{ inputs.message }}
