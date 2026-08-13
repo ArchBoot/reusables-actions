@@ -16,10 +16,26 @@ inputs:
   project_name:
     description: The name of the project to scan
     required: true
+  analysis_type:
+    description: branch or pull_request
+    required: false
+    default: branch
   branch_name:
     description: The name of the branch to scan
     required: false
     default: ${{ github.ref_name }}
+  pr_key:
+    description: PR Key
+    required: false
+    default: ''
+  pr_branch:
+    description: PR branch
+    required: false
+    default: ''
+  pr_base:
+    description: PR base
+    required: false
+    default: ''
   sources:
     description: The source directories to scan (comma-separated)
     required: false
@@ -29,6 +45,10 @@ inputs:
     required: false
     # Default path for lcov coverage report node projects. Adjust as needed for your project structure.
     default: 'coverage/lcov.info'
+  quality_gate_wait:
+    description: Fail the step if the Quality Gate fails
+    required: false
+    default: 'false'
 
 runs:
   using: composite
@@ -42,6 +62,11 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar_token }}
         PROJECT_KEY: ${{ inputs.project_key }}
         PROJECT_NAME: ${{ inputs.project_name }}
+        ANALYSIS_TYPE: ${{ inputs.analysis_type }}
         BRANCH_NAME: ${{ inputs.branch_name }}
+        PR_KEY: ${{ inputs.pr_key }}
+        PR_BRANCH: ${{ inputs.pr_branch }}
+        PR_BASE: ${{ inputs.pr_base }}
         SOURCES: ${{ inputs.sources }}
         COVERAGE_REPORT_PATH: ${{ inputs.coverage-report-path }}
+        QUALITY_GATE_WAIT: ${{ inputs.quality_gate_wait }}
