@@ -1,0 +1,84 @@
+name: Jira Analysis Action
+description: Detect tickets ID from repository
+
+inputs:
+  ticket_source:
+    description: >
+      Search ticket for:
+      'branch' -> branch name or head branch,
+      'pr_title' -> title pull request,
+      'commits' -> commits from push or pull request,
+      'auto' -> in this order: branch --> pr_title --> commits
+    required: false
+    default: 'auto'
+  ticket_patten:
+    description: Regex to extract ticket
+    required: false
+    default: '[A-Z]+-[0-9]+'
+  jira_base_url:
+    description: Jira base URL
+    required: true
+  jira_email:
+    description: Jira email
+    required: true
+  jira_api_token:
+    description: Jira API token
+    required: true
+  allowed_statuses:
+    description: Allowed statuses
+    required: false
+  fail_on_invalid:
+    description: Fail if ticket not exist or its status is invalid
+    required: false
+    default: 'false'
+  fail_if_not_found:
+    description: Fail if not detect any ticket
+    required: false
+    default: 'false'
+
+outputs:
+  ticket_id:
+    description: Ticket ID
+    value: ${{ steps.detect.outputs.ticket_id }}
+  ticket_source_used:
+    description: Ticket source used
+    value: ${{ steps.detect.outputs.ticket_source_used }}
+  exists:
+    description: Exist ticket
+    value: ${{ steps.validate.outputs.exists }}
+  status:
+    description: Status ticket
+    value: ${{ steps.validate.outputs.status }}
+  issue_type:
+    description: Issue Type
+    value: ${{ steps.validate.outputs.issue_type }}
+  summary:
+    description: Summary
+    value: ${{ steps.validate.outputs.summary }}
+  valid:
+    description: Valid
+    value: ${{ steps.validate.outputs.valid }}
+
+runs:
+  using: composite
+  steps:
+    - name: Detect ticket id
+      id: detect
+      shell: bash
+      run: ${{ github.action_path }}/scripts/detect.sh
+      env:
+        TICKET_SOURCE: ${{ inputs.ticket_source }}
+        TICKET_PATTERN: ${{ inputs.ticket_patten }}
+        FAIL_IF_NOT_FOUND: ${{ inputs.fail_if_not_found }}
+
+    - name: Validate ticket in Jira
+      id: validate
+      shell: bash
+      run: ${{ github.action_path }}/scripts/validate.sh
+      env:
+        JIRA_BASE_URL: ${{ inputs.jira_base_url }}
+        JIRA_EMAIL: ${{ inputs.jira_email }}
+        JIRA_API_TOKEN: ${{ inputs.jira_api_token }}
+        TICKET_ID: ${{ teps.detect.outputs.ticket_id }}
+        ALLOWED_STATUSES: ${{ inputs.allowed_statuses }}
+        FAIL_ON_INVALID: ${{ inputs.fail_on_invalid }}
