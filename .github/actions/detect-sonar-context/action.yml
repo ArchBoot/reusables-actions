@@ -4,19 +4,19 @@ description: Determines whether the current run is a branch or PR analysis and e
 outputs:
   analysis_type:
     description: branch or pull request
-    value: ${{  }}
+    value: ${{ steps.context.outputs.analysis_type }}
   branch_name:
-    description: Branch name (only for btanch analysis)
-    value: ${{  }}
+    description: Branch name (only for branch analysis)
+    value: ${{ steps.context.outputs.branch_name }}
   pr_key:
-    description: PR number (only for pull request analysis
-    value: ${{  }}
+    description: PR number (only for pull request analysis)
+    value: ${{ steps.context.outputs.pr_key }}
   pr_branch:
     description: Head branch of the PR
-    value: ${{  }}
+    value: ${{ steps.context.outputs.pr_branch }}
   pr_base:
     description: Base branch of the PR
-    value: ${{  }}
+    value: ${{ steps.context.outputs.pr_base }}
 
 runs:
   using: composite
