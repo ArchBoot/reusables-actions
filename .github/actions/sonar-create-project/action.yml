@@ -20,7 +20,7 @@ runs:
   steps:
     - name: Create project
       shell: bash
-      run: ${{ github.action_path }}/scripts/sonar-sonar-create-project.sh
+      run: ${{ github.action_path }}/scripts/sonar-create-project.sh
       env:
         SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
         SONAR_TOKEN: ${{ inputs.sonar_token }}
