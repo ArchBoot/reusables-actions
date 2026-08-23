@@ -79,6 +79,6 @@ runs:
         JIRA_BASE_URL: ${{ inputs.jira_base_url }}
         JIRA_EMAIL: ${{ inputs.jira_email }}
         JIRA_API_TOKEN: ${{ inputs.jira_api_token }}
-        TICKET_ID: ${{ teps.detect.outputs.ticket_id }}
+        TICKET_ID: ${{ steps.detect.outputs.ticket_id }}
         ALLOWED_STATUSES: ${{ inputs.allowed_statuses }}
         FAIL_ON_INVALID: ${{ inputs.fail_on_invalid }}
