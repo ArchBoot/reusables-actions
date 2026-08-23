@@ -27,7 +27,7 @@ fi
 
 
 QG_ARGS=()
-if [ "${QUALIY_GATE_WAIT:-false}" == "true" ]; then
+if [ "${QUALITY_GATE_WAIT:-false}" == "true" ]; then
   QR_ARGS=("-Dsonar.qualitygate.wait=true")
 fi
 
