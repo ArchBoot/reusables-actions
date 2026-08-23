@@ -34,7 +34,9 @@ fi
 case $STACK in
   "java-maven")
 
-  echo "Running SonarQube scan for Java Maven project on branch: $BRANCH_NAME"
+    mvn clean verify
+
+    echo "Running SonarQube scan for Java Maven project on branch: $BRANCH_NAME"
     mvn sonar:sonar \
       -Dsonar.projectKey="$PROJECT_KEY" \
       -Dsonar.host.url="$SONAR_HOST_URL" \
