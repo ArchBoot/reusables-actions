@@ -55,7 +55,7 @@ runs:
   steps:
     - name: Run SonarQube Scan
       shell: bash
-      run: ${{ github.action_path }}/scripts/sonar-scan.sh
+      run: ${{ github.action_path }}/scripts/scan.sh
       env:
         STACK: ${{ inputs.stack }}
         SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
