@@ -5,9 +5,9 @@ set -euo pipefail
 : "${SONAR_TOKEN:?Environment variable SONAR_TOKEN is required}"
 : "${PROJECT_KEY:?Environment variable PROJECT_KEY is required}"
 : "${STACK:?Environment variable STACK is required}"
-: "${ANALISYS_TYPE:?Environment variable ANALISYS_TYPE is required}"
+: "${ANALYSIS_TYPE:?Environment variable ANALYSIS_TYPE is required}"
 
-if [[ "$ANALISYS_TYPE" == "pull_request" ]]; then
+if [[ "$ANALYSIS_TYPE" == "pull_request" ]]; then
   : "${PR_KEY:?PR_KEY is required for pull_request analysis}"
   : "${PR_BRANCH:?PR_BRANCH is required for pull_request analysis}"
   : "${PR_BASE:?PR_BASE is required for pull_request analysis}"
