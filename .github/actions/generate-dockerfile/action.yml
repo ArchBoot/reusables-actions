@@ -1,0 +1,29 @@
+name: Generate Dockerfile
+
+description: Generate an optimized Dockerfile according to the detected stack
+
+inputs:
+  stack:
+    description: Detected stack
+    required: true
+  output:
+    description: Generated Dockerfile path
+    required: false
+    default: .docker/Dockerfile
+
+outputs:
+  dockerfile:
+    description: Generated Dockerfile Path
+    value: ${{ steps.generate.outputs.dockerfile }}
+
+runs:
+  using: composite
+  steps:
+    - name: Generate Dockerfile
+      id: generate
+      shell: bash
+      run: ${{ github.action_path }}/scripts/generate.sh
+      env:
+        STACK: ${{ inputs.stack }}
+        OUTPUT: ${{ inputs.output }}
+        ACTION_PATH: ${{ github.action_path }}

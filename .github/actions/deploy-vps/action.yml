@@ -1,0 +1,133 @@
+name: Deploy Docker Image to VPS
+description: Deploy a Docker image
+
+inputs:
+  host:
+    description: Host
+    required: true
+  username:
+    description: User name
+    required: true
+  ssh_private_key:
+    description: SSH private key
+    required: true
+  ssh_port:
+    description: SSH port
+    default: '22'
+  image:
+    description: Image
+    required: true
+  app_name:
+    description: App name
+    required: true
+  deploy_path:
+    description: Deploy path
+    required: true
+  domain:
+    description: Domain
+    required: true
+  container_port:
+    description: Container port
+    required: true
+  traefik_network:
+    description: Traefik network
+    required: false
+    default: proxy
+  use_docker_hub:
+    description: Use Docker Hub
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup SSH
+      shell: bash
+      run: ${{ github.action_path }}/scripts/setup.sh
+      env:
+        SSH_KEY: ${{ inputs.ssh_private_key }}
+
+    - name: Add VPS to known hosts
+      shell: bash
+      run: ${{ github.action_path }}/scripts/addvps.sh
+      env:
+        HOST: ${{ inputs.host }}
+        PORT: ${{ inputs.ssh_port }}
+
+    - name: Export Docker image
+      if: inputs.use_docker_hub == 'false'
+      shell: bash
+      env:
+        IMAGE: ${{ inputs.image }}
+      run: |
+        docker image save $IMAGE | gzip > image.tar.gz
+
+    - name: Create deployment directory
+      shell: bash
+      env:
+        HOST: ${{ inputs.host }}
+        PORT: ${{ inputs.ssh_port }}
+        USERNAME: ${{ inputs.username }}
+        DEPLOY_PATH: ${{ inputs.deploy_path }}
+      run: |
+        ssh -i ~/.ssh/id_ed255519 -p "$PORT" "$USERNAME@$HOST" \
+        "mkdir -p '$DEPLOY_PATH'"
+
+    - name: Transfer Docker image
+      if: inputs.use_docker_hub == 'false'
+      shell: bash
+      env:
+        HOST: ${{ inputs.host }}
+        PORT: ${{ inputs.ssh_port }}
+        USERNAME: ${{ inputs.username }}
+        DEPLOY_PATH: ${{ inputs.deploy_path }}
+      run: |
+        scp -i ~/.ssh/id_ed255519 -p "$PORT" image.tar.gz \
+          "$USERNAME@$HOST:$DEPLOY_PATH/image.tar.gz"
+
+    - name: Generate docker-compose
+      shell: bash
+      env:
+        APP_NAME: ${{ inputs.app_name }}
+        IMAGE: ${{ inputs.image }}
+        DOMAIN: ${{ inputs.domain }}
+        CONTAINER_PORT: ${{ inputs.container_port }}
+        NETWORK: ${{ inputs.traefik_network }}
+      run: ${{ github.action_path }}/scripts/generate.sh
+
+    - name: Transfer Docker Compose
+      shell: bash
+      env:
+        HOST: ${{ inputs.host }}
+        PORT: ${{ inputs.ssh_port }}
+        USERNAME: ${{ inputs.username }}
+        DEPLOY_PATH: ${{ inputs.deploy_path }}
+      run: |
+        scp -i ~/.ssh/id_ed255519 -P "$PORT" docker-compose.yml \
+          "$USERNAME@HOST:$DEPLOY_PATH/docker-compose.yml"
+
+    - name: Deploy
+      shell: bash
+      env:
+        HOST: ${{ inputs.host }}
+        PORT: ${{ inputs.ssh_port }}
+        USERNAME: ${{ inputs.username }}
+        DEPLOY_PATH: ${{ inputs.deploy_path }}
+        USE_DOCKER_HUB: ${{ inputs.use_docker_hub }}
+      run: |
+        ssh -i ~/.ssh/id_ed255519 -p "$PORT" "$USERNAME@$HOST" \
+        "
+        set -e
+        
+        cd '$DEPLOY_PATH'
+        
+        if [ '$USE_DOCKER_HUB' == 'false' ]; then
+          docker load < image.tar.gz
+          rm -f image.tar.gz
+        else
+          docker compose pull
+        fi
+        
+        docker compose up -d --remove-orphans
+        docker image prune -f
+        "
