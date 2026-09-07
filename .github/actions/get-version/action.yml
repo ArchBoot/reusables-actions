@@ -1,0 +1,37 @@
+name: Get Version
+description: Get version from project
+
+inputs:
+  stack:
+    description: The stack to get the version project (e.g. java-maven, node-npm)
+    required: true
+
+outputs:
+  version:
+    description: Current version
+    value: ${{ steps.read.outputs.version }}
+  is_snapshot:
+    description: Whether the current version is a snapshot version
+    value: ${{ steps.read.outputs.is_snapshot }}
+  base_version:
+    description: Base version without the -SNAPSHOT suffix
+    value: ${{ steps.read.outputs.base_version }}
+  major:
+    description: Major version number
+    value: ${{ steps.read.outputs.major }}
+  minor:
+    description: Minor version number
+    value: ${{ steps.read.outputs.minor }}
+  patch:
+    description: Patch version number
+    value: ${{ steps.read.outputs.patch }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get version
+      id: read
+      shell: bash
+      run: ${{ github.action_path }}/get-version.sh
+      env:
+        STACK: ${{ inputs.stack }}

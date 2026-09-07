@@ -1,0 +1,31 @@
+name: Bump version
+description: Bump version in project
+
+inputs:
+  current_version:
+    description: The current version of the project
+    required: true
+  bump_type:
+    description: The type of bump to perform
+    required: true
+  snapshot:
+    description: Whether to append -SNAPSHOT to the version
+    required: false
+    default: 'false'
+
+outputs:
+  next_version:
+    description: The next version after bumping
+    value: ${{ steps.bump.outputs.next_version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Calculate next version
+      id: bump
+      shell: bash
+      run: ${{ github.action_path }}/bump-version.sh
+      env:
+        CURRENT_VERSION: ${{ inputs.current_version }}
+        BUMP_TYPE: ${{ inputs.bump_type }}
+        SNAPSHOT: ${{ inputs.snapshot }}
