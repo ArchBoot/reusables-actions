@@ -1,0 +1,16 @@
+name: Test
+description: Tests the project based on the detected technology stack.
+
+inputs:
+  stack:
+    description: The detected technology stack (e.g., java-maven, node-npm)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: test
+      shell: bash
+      run: ${{ github.action_path }}/scripts/test.sh
+      env:
+        STACK: ${{ inputs.stack }}

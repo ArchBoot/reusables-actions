@@ -1,0 +1,38 @@
+name: Publish Maven Central
+description: Publish a Maven Artifactory to Maven Central
+
+inputs:
+  version:
+    description: Version
+    required: true
+  central_username:
+    description: Central user name
+    required: true
+  cental_password:
+    description: Cental password
+  gpg_private_key:
+    description: GPG private key
+    required: true
+  gpg_passphrase:
+    description: GPG passphrase
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: Import GPG Key
+      shell: bash
+      env:
+        GPG_PRIVATE_KEY: ${{ inputs.gpg_private_key }}
+      run: |
+        echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+
+    - name: Publish
+      shell: bash
+      env:
+        CENTRAL_USERNAME: ${{ inputs.central_username }}
+        CENTRAL_PASSWORD: ${{ inputs.cental_password }}
+        GPG_PASSPHRASE: ${{ inputs.gpg_passphrase }}
+      run: |
+        mvn --batch-mode --no-transfer-progress clean deploy -Drevision="${{ inputs.version }}" -Dgpg.passphrase="$GPG_PASSPHRASE"

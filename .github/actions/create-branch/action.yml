@@ -1,0 +1,25 @@
+name: Create Branch Action
+description: Creates a new branch from the specified base branch and optionally pushes it to the remote repository.
+
+inputs:
+    base_branch:
+        description: The base branch from which to create the new branch (e.g., 'develop').
+        required: true
+    new_branch:
+        description: The name of the new branch to create.
+        required: true
+    push:
+        description: Whether to push the new branch to the remote repository. Set to 'true' or 'false'.
+        required: false
+        default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Create new branch
+      shell: bash
+      run: ${{ github.action_path }}/scripts/create-branch.sh
+      env:
+        BASE_BRANCH: ${{ inputs.base_branch }}
+        NEW_BRANCH: ${{ inputs.new_branch }}
+        PUSH: ${{ inputs.push }}

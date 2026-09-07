@@ -1,0 +1,37 @@
+name: Set Version
+description: Set version in project
+
+inputs:
+  stack:
+    description: The stack to set the version for (e.g. java-maven, node-npm)
+    required: true
+  version:
+    description: New version to set (e.g. 0.1.0 or 0.2.0-SNAPSHOT)
+    required: true
+  commit:
+    description: Whether to commit the version change
+    required: false
+    default: 'true'
+  commit_message:
+    description: Commit message for version change
+    required: false
+    default: 'chore: bump version to {$version} [skip ci]'
+
+runs:
+  using: composite
+  steps:
+    - name: Set version in project
+      shell: bash
+      run: ${{ github.action_path }}/set-version.sh
+      env:
+        STACK: ${{ inputs.stack }}
+        NEW_VERSION: ${{ inputs.version }}
+
+    - name: Commit version change
+      if: ${{ inputs.commit == 'true' }}
+      shell: bash
+      run: |
+        COMMIT_MSG="${{ inputs.commit_message }}"
+        COMMIT_MSG="${COMMIT_MSG/\{version\}/${{ inputs.version }}}"
+        git add -A
+        git diff --staged --quiet || git commit -m "${COMMIT_MSG}"

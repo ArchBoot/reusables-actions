@@ -1,0 +1,34 @@
+name: Docker Build Action
+description: Build a Docker image using a generated Dockerfile
+
+inputs:
+  image_name:
+    description: Image name
+    required: true
+  image_tag:
+    description: Image tag
+    required: true
+  dockerfile:
+    description: Generated Dockerfile Path
+    required: true
+  context:
+    description: Context Path
+    default: .
+
+outputs:
+  image:
+    description: Image created
+    value: ${{ steps.image.outputs.image }}
+
+runs:
+  using: composite
+  steps:
+    - name: Build image
+      id: image
+      shell: bash
+      run: ${{ github.action_path }}/scripts/build.sh
+      env:
+        IMAGE_NAME: ${{ inputs.image_name }}
+        IMAGE_TAG: ${{ inputs.image_tag }}
+        DOCKERFILE: ${{ inputs.dockerfile }}
+        CONTEXT: ${{ inputs.context }}

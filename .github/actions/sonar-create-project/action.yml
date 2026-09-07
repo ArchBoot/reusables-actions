@@ -1,0 +1,28 @@
+name: Create Project On Sonar
+description: Create project on SonarQube or SonarCloud and set up the necessary configuration for analysis.
+
+inputs:
+  sonar_host_url:
+    description: Server URL's SonarQube
+    required: true
+  sonar_token:
+    description: Auth token with create project permissions
+    required: true
+  project_key:
+    description: Unique key project Sonar
+    required: true
+  project_name:
+    description: Visible project name
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Create project
+      shell: bash
+      run: ${{ github.action_path }}/scripts/sonar-create-project.sh
+      env:
+        SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
+        SONAR_TOKEN: ${{ inputs.sonar_token }}
+        PROJECT_KEY: ${{ inputs.project_key }}
+        PROJECT_NAME: ${{ inputs.project_name }}
