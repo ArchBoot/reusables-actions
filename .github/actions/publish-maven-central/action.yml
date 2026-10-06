@@ -8,8 +8,9 @@ inputs:
   central_username:
     description: Central user name
     required: true
-  cental_password:
-    description: Cental password
+  central_password:
+    description: Central password
+    required: true
   gpg_private_key:
     description: GPG private key
     required: true
