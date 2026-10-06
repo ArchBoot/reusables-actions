@@ -36,4 +36,4 @@ runs:
         CENTRAL_PASSWORD: ${{ inputs.central_password }}
         GPG_PASSPHRASE: ${{ inputs.gpg_passphrase }}
       run: |
-        mvn --batch-mode --no-transfer-progress clean deploy -Drevision="${{ inputs.version }}" -Dgpg.passphrase="$GPG_PASSPHRASE"
+        mvn --batch-mode --no-transfer-progress clean deploy -P publish -Drevision="${{ inputs.version }}" -Dgpg.passphrase="$GPG_PASSPHRASE"
